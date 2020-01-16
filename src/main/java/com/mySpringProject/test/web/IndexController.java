@@ -1,7 +1,7 @@
 package com.mySpringProject.test.web;
 
+import com.mySpringProject.test.config.auth.LoginUser;
 import com.mySpringProject.test.config.auth.dto.SessionUser;
-import com.mySpringProject.test.domain.user.User;
 import com.mySpringProject.test.service.posts.PostsService;
 import com.mySpringProject.test.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +16,17 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class IndexController {
     private final PostsService postsService;
-    private final HttpSession httpSession;
+//    private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model){
+    public String index(Model model, @LoginUser SessionUser user){
         // 서버 템플릿 엔진에서 사용할 수 있는 객체를 저장할 수 있습니다.
         // postsService.findAllDesc() 로 가져온 결과를 posts로 index.mustache에 전달합니다.
         model.addAttribute("posts", postsService.findAllDesc());
 
         //로그인에 성공하고 CustomOAuth2UserService 클래스에서 세션에 저장한 SessionUser 정보를 가져옵니다.
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
-        System.out.println("유저정보 확인");
+        //SessionUser user = (SessionUser) httpSession.getAttribute("user");
         if(user != null){ // 세션에 유저정보가 없다면 로그인 전이니 값을 등록하지 않습니다.
-            System.out.println("유저정보 있음");
             model.addAttribute("userName", user.getName());
         }
         return "index";
